@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: homehelperapi
+  repository: chesterdang/helper-finder-api
   tag: latest
   pullPolicy: IfNotPresent
 
