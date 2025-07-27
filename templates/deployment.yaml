@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homehelper-api.fullname" . }}
+  labels:
+    {{- include "homehelper-api.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "homehelper-api.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "homehelper-api.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: {{ .Values.environment.name | quote }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.secrets.enabled }}
+        envFrom:
+          - secretRef:
+              name: {{ include "homehelper-api.fullname" . }}-secrets
+        {{- end }} 

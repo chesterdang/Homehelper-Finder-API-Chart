@@ -1,0 +1,46 @@
+replicaCount: 2
+
+image:
+  repository: homehelperapi
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+resources:
+  limits:
+    cpu: 512m
+    memory: 512Mi
+  requests:
+    cpu: 256m
+    memory: 256Mi
+
+environment:
+  name: "Development"
+
+secrets:
+  enabled: true
+  data:
+    ASPNETCORE_ENVIRONMENT: "Development"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
+  hosts:
+    - host: api.dpercs.io.vn
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: homehelper-api-tls
+      hosts:
+        - api.dpercs.io.vn
