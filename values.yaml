@@ -21,6 +21,9 @@ resources:
     cpu: 256m
     memory: 256Mi
 
+nodeSelector:
+  kubernetes.io/arch: amd64
+
 environment:
   name: "Development"
 
